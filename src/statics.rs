@@ -5,8 +5,8 @@ use rust_embed::RustEmbed;
 pub fn init(app: Router) -> Router {
     app.route("/index.css", get(static_index_css))
         .route(
-            "/tailwind_preflight.css",
-            get(static_tailwind_preflight_css),
+            "/tailwind.css",
+            get(static_tailwind_css),
         )
         .route("/htmx.min.js", get(static_htmx_min_js))
 }
@@ -28,10 +28,10 @@ async fn static_index_css() -> impl IntoResponse {
     )
         .into_response()
 }
-async fn static_tailwind_preflight_css() -> impl IntoResponse {
+async fn static_tailwind_css() -> impl IntoResponse {
     (
         [(header::CONTENT_TYPE, "text/css")],
-        Asset::get("tailwind_preflight.css").unwrap().data.to_vec(),
+        Asset::get("tailwind.css").unwrap().data.to_vec(),
     )
         .into_response()
 }
