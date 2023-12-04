@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="tailwind.css">
@@ -7,30 +8,34 @@
     <script src="htmx.min.js"></script>
     <script src="sortable.min.js"></script>
     <script>
-        htmx.onLoad(function(content) {
+        htmx.onLoad(function (content) {
             var sortables = content.querySelectorAll(".sortable");
             for (var i = 0; i < sortables.length; i++) {
-              var sortable = sortables[i];
-              var sortableInstance = new Sortable(sortable, {
-                  animation: 150,
-                  ghostClass: 'blue-background-class',
-                  filter: ".htmx-indicator",
-                  onMove: function (evt) {
-                    return evt.related.className.indexOf('htmx-indicator') === -1;
-                  },
-                  onEnd: function (evt) {
-                    this.option("disabled", true);
-                  }
-              });
-              sortable.addEventListener("htmx:afterSwap", function() {
-                sortableInstance.option("disabled", false);
-              });
+                var sortable = sortables[i];
+                var sortableInstance = new Sortable(sortable, {
+                    group: 'shared',
+                    animation: 150,
+                    ghostClass: 'blue-background-class',
+                    filter: ".htmx-indicator",
+                    onMove: function (evt) {
+                        return evt.related.className.indexOf('htmx-indicator') === -1;
+                    },
+                    onEnd: function (evt) {
+                        this.option("disabled", true);
+                    }
+                });
+                sortable.addEventListener("htmx:afterSwap", function () {
+                    sortableInstance.option("disabled", false);
+                });
             }
         })
-        </script>
+    </script>
     <title>norush</title>
 </head>
+
 <body class="bg-gray-100">
     <h1>norush</h1>
+    <div id="board" hx-get="/board" hx-trigger="load" hx-target="#board" hx-swap="outerHTML"></div>
 </body>
+
 </html>
