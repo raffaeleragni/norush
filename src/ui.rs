@@ -1,10 +1,11 @@
 use askama::Template;
-use axum::{routing::get, Router};
+use axum::{routing::{get, post}, Router};
 
 pub fn init(app: Router) -> Router {
     app.route("/", get(index))
         .route("/board", get(board))
-        .route("/card", get(card))
+        .route("/state", post(state))
+        .route("/card", post(card))
 }
 
 #[derive(Template)]
@@ -36,6 +37,12 @@ impl StateCards {
 #[template(path = "card.html")]
 struct CardPage {
     card: Card,
+}
+
+#[derive(Template, Default)]
+#[template(path = "state.html")]
+struct StatePage {
+    state: StateCards,
 }
 
 #[derive(Default)]
@@ -103,6 +110,32 @@ async fn board() -> Board {
                 ],
             },
         ],
+    }
+}
+
+async fn state() -> StatePage {
+    StatePage {
+        state: StateCards {
+            state: "done",
+            cards: vec![
+                Card {
+                    id: 6,
+                    title: "setup project",
+                },
+                Card {
+                    id: 7,
+                    title: "setup build tools",
+                },
+                Card {
+                    id: 8,
+                    title: "create github",
+                },
+                Card {
+                    id: 9,
+                    title: "announce project",
+                },
+            ],
+        },
     }
 }
 

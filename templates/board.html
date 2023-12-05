@@ -2,13 +2,10 @@
     <p>Board</p>
     <div class="flex flex-row border-gray-500 border-2">
         {% for state in states %}
-        <form id="state-{{ state.stripped_state() }}" hx-post="/move" hx-trigger="end" class="sortable flex flex-col border-white border-2 mx-5">
-            <input type="hidden" name="state" value="{{ state.state }}"/>
+        <div class="flex flex-col border-white border-2 mx-5">
             <div class="text-center p-5">{{ state.state }}</div>
-            {% for card in state.cards %}
-            {% include "card.html" %}
-            {% endfor %}
-        </form>
+            {% include "state.html" %}
+        </div>
         {% endfor %}
     </div>
 </div>

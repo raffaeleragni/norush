@@ -1,4 +1,4 @@
-mod app;
+mod ui;
 mod db;
 mod statics;
 
@@ -16,7 +16,7 @@ async fn main() -> Result<()> {
 
 async fn app() -> Result<Router> {
     let mut app = Router::new();
-    app = app::init(app);
+    app = ui::init(app);
     app = statics::init(app);
     Ok(app.layer(Extension(db::init().await?)))
 }

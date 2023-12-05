@@ -9,6 +9,7 @@
     <script src="sortable.min.js"></script>
     <script>
         htmx.onLoad(function (content) {
+            console.log(content);
             var sortables = content.querySelectorAll(".sortable");
             for (var i = 0; i < sortables.length; i++) {
                 var sortable = sortables[i];
@@ -20,6 +21,11 @@
                     onMove: function (evt) {
                         return evt.related.className.indexOf('htmx-indicator') === -1;
                     },
+                    onEnd: function(evt) {
+                        // sortable only triggers for the source list, not the destination
+                        // so need to trigger the event manually here
+                        htmx.trigger(evt.to.closest('form'), "end");
+                    }
                 });
             }
         })

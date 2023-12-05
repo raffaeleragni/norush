@@ -1,0 +1,7 @@
+<form id="state-{{ state.stripped_state() }}" hx-post="/state" hx-trigger="end" hx-swap="outerHTML"
+    class="sortable flex flex-col border-white border-2 mx-5">
+    <input type="hidden" name="state" value="{{ state.state }}" />
+    {% for card in state.cards %}
+    {% include "card.html" %}
+    {% endfor %}
+</form>
