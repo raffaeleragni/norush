@@ -23,6 +23,15 @@ struct StateCards {
     cards: Vec<Card>,
 }
 
+impl StateCards {
+    fn stripped_state(&self) -> String {
+        self.state
+            .to_string()
+            .replace(&[' ', '-', '_'][..], "")
+            .to_lowercase()
+    }
+}
+
 #[derive(Template, Default)]
 #[template(path = "card.html")]
 struct CardPage {
@@ -103,5 +112,47 @@ async fn card() -> CardPage {
             id: 0,
             title: "sample title",
         },
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::StateCards;
+
+    #[test]
+    fn stripped_state_empty() {
+        let state = state_of("");
+        assert_eq!(state.stripped_state(), "");
+    }
+
+    #[test]
+    fn stripped_state_word() {
+        let state = state_of("word");
+        assert_eq!(state.stripped_state(), "word");
+    }
+
+    #[test]
+    fn stripped_state_words() {
+        let state = state_of("word word");
+        assert_eq!(state.stripped_state(), "wordword");
+    }
+
+    #[test]
+    fn stripped_state_words_more_spaces() {
+        let state = state_of("word  word");
+        assert_eq!(state.stripped_state(), "wordword");
+    }
+
+    #[test]
+    fn stripped_state_symbols() {
+        let state = state_of("word-word_word-Word");
+        assert_eq!(state.stripped_state(), "wordwordwordword");
+    }
+
+    fn state_of(state: &'static str) -> StateCards {
+        StateCards {
+            state,
+            cards: Vec::new(),
+        }
     }
 }

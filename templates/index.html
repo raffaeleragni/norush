@@ -20,12 +20,6 @@
                     onMove: function (evt) {
                         return evt.related.className.indexOf('htmx-indicator') === -1;
                     },
-                    onEnd: function (evt) {
-                        this.option("disabled", true);
-                    }
-                });
-                sortable.addEventListener("htmx:afterSwap", function () {
-                    sortableInstance.option("disabled", false);
                 });
             }
         })
