@@ -31,6 +31,7 @@ struct CardPage {
 
 #[derive(Default)]
 struct Card {
+    id: u64,
     title: &'static str,
 }
 
@@ -44,16 +45,29 @@ async fn board() -> Board {
             StateCards {
                 state: "todo",
                 cards: vec![
-                    Card { title: "user actions" },
-                    Card { title: "connect to database" },
+                    Card {
+                        id: 1,
+                        title: "user actions",
+                    },
+                    Card {
+                        id: 2,
+                        title: "connect to database",
+                    },
                 ],
             },
             StateCards {
                 state: "in progress",
                 cards: vec![
-                    Card { title: "mock data" },
-                    Card { title: "refactor" },
                     Card {
+                        id: 3,
+                        title: "mock data",
+                    },
+                    Card {
+                        id: 4,
+                        title: "refactor",
+                    },
+                    Card {
+                        id: 5,
                         title: "setup layout",
                     },
                 ],
@@ -62,15 +76,19 @@ async fn board() -> Board {
                 state: "done",
                 cards: vec![
                     Card {
+                        id: 6,
                         title: "setup project",
                     },
                     Card {
+                        id: 7,
                         title: "setup build tools",
                     },
                     Card {
+                        id: 8,
                         title: "create github",
                     },
                     Card {
+                        id: 9,
                         title: "announce project",
                     },
                 ],
@@ -82,6 +100,7 @@ async fn board() -> Board {
 async fn card() -> CardPage {
     CardPage {
         card: Card {
+            id: 0,
             title: "sample title",
         },
     }
