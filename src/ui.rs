@@ -1,5 +1,8 @@
 use askama::Template;
-use axum::{routing::{get, post}, Router};
+use axum::{
+    routing::{get, post},
+    Router,
+};
 
 pub fn init(app: Router) -> Router {
     app.route("/", get(index))

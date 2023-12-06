@@ -4,10 +4,7 @@ use rust_embed::RustEmbed;
 
 pub fn init(app: Router) -> Router {
     app.route("/index.css", get(static_index_css))
-        .route(
-            "/tailwind.css",
-            get(static_tailwind_css),
-        )
+        .route("/tailwind.css", get(static_tailwind_css))
         .route("/htmx.min.js", get(static_htmx_min_js))
         .route("/sortable.min.js", get(static_sortable_min_js))
 }
