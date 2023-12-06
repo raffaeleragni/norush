@@ -9,19 +9,11 @@
     <script src="sortable.min.js"></script>
     <script>
         htmx.onLoad(function (content) {
-            console.log(content);
             var sortables = content.querySelectorAll(".sortable");
             for (var i = 0; i < sortables.length; i++) {
-                var sortable = sortables[i];
-                var sortableInstance = new Sortable(sortable, {
+                new Sortable(sortables[i], {
                     group: 'shared',
-                    animation: 150,
-                    ghostClass: 'blue-background-class',
-                    filter: ".htmx-indicator",
-                    onMove: function (evt) {
-                        return evt.related.className.indexOf('htmx-indicator') === -1;
-                    },
-                    onEnd: function(evt) {
+                    onEnd: function (evt) {
                         // sortable only triggers for the source list, not the destination
                         // so need to trigger the event manually here
                         htmx.trigger(evt.to.closest('form'), "end");

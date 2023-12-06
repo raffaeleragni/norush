@@ -1,8 +1,9 @@
 use askama::Template;
 use axum::{
     routing::{get, post},
-    Router,
+    Router, Form,
 };
+use serde::Deserialize;
 
 pub fn init(app: Router) -> Router {
     app.route("/", get(index))
@@ -18,16 +19,16 @@ struct Index;
 #[derive(Template, Default)]
 #[template(path = "board.html")]
 struct Board {
-    states: Vec<StateCards>,
+    states: Vec<StateWithCards>,
 }
 
 #[derive(Default)]
-struct StateCards {
+struct StateWithCards {
     state: &'static str,
     cards: Vec<Card>,
 }
 
-impl StateCards {
+impl StateWithCards {
     fn stripped_state(&self) -> String {
         self.state
             .to_string()
@@ -45,7 +46,7 @@ struct CardPage {
 #[derive(Template, Default)]
 #[template(path = "state.html")]
 struct StatePage {
-    state: StateCards,
+    state: StateWithCards,
 }
 
 #[derive(Default)]
@@ -58,86 +59,94 @@ async fn index() -> Index {
     Index {}
 }
 
-async fn board() -> Board {
-    Board {
-        states: vec![
-            StateCards {
-                state: "todo",
-                cards: vec![
-                    Card {
-                        id: 1,
-                        title: "user actions",
-                    },
-                    Card {
-                        id: 2,
-                        title: "connect to database",
-                    },
-                ],
+fn statecards_todo() -> StateWithCards {
+    StateWithCards {
+        state: "todo",
+        cards: vec![
+            Card {
+                id: 1,
+                title: "user actions",
             },
-            StateCards {
-                state: "in progress",
-                cards: vec![
-                    Card {
-                        id: 3,
-                        title: "mock data",
-                    },
-                    Card {
-                        id: 4,
-                        title: "refactor",
-                    },
-                    Card {
-                        id: 5,
-                        title: "setup layout",
-                    },
-                ],
-            },
-            StateCards {
-                state: "done",
-                cards: vec![
-                    Card {
-                        id: 6,
-                        title: "setup project",
-                    },
-                    Card {
-                        id: 7,
-                        title: "setup build tools",
-                    },
-                    Card {
-                        id: 8,
-                        title: "create github",
-                    },
-                    Card {
-                        id: 9,
-                        title: "announce project",
-                    },
-                ],
+            Card {
+                id: 2,
+                title: "connect to database",
             },
         ],
     }
 }
 
-async fn state() -> StatePage {
-    StatePage {
-        state: StateCards {
-            state: "done",
-            cards: vec![
-                Card {
-                    id: 6,
-                    title: "setup project",
-                },
-                Card {
-                    id: 7,
-                    title: "setup build tools",
-                },
-                Card {
-                    id: 8,
-                    title: "create github",
-                },
-                Card {
-                    id: 9,
-                    title: "announce project",
-                },
-            ],
+fn statecards_inprogress() -> StateWithCards {
+    StateWithCards {
+        state: "in progress",
+        cards: vec![
+            Card {
+                id: 3,
+                title: "mock data",
+            },
+            Card {
+                id: 4,
+                title: "refactor",
+            },
+            Card {
+                id: 5,
+                title: "setup layout",
+            },
+        ],
+    }
+}
+
+fn statecards_done() -> StateWithCards {
+    StateWithCards {
+        state: "done",
+        cards: vec![
+            Card {
+                id: 6,
+                title: "setup project",
+            },
+            Card {
+                id: 7,
+                title: "setup build tools",
+            },
+            Card {
+                id: 8,
+                title: "create github",
+            },
+            Card {
+                id: 9,
+                title: "announce project",
+            },
+        ],
+    }
+}
+
+async fn board() -> Board {
+    Board {
+        states: vec![
+            statecards_todo(),
+            statecards_inprogress(),
+            statecards_done(),
+        ],
+    }
+}
+
+#[derive(Deserialize)]
+struct StateForm {
+    state: String,
+}
+
+async fn state(Form(state): Form<StateForm>) -> StatePage {
+    match state.state.as_str() {
+        "todo" => StatePage {
+            state: statecards_todo(),
+        },
+        "in progress" => StatePage {
+            state: statecards_inprogress(),
+        },
+        "done" => StatePage {
+            state: statecards_done(),
+        },
+        _ => StatePage {
+            state: StateWithCards::default(),
         },
     }
 }
@@ -153,7 +162,7 @@ async fn card() -> CardPage {
 
 #[cfg(test)]
 mod test {
-    use super::StateCards;
+    use super::StateWithCards;
 
     #[test]
     fn stripped_state_empty() {
@@ -185,8 +194,8 @@ mod test {
         assert_eq!(state.stripped_state(), "wordwordwordword");
     }
 
-    fn state_of(state: &'static str) -> StateCards {
-        StateCards {
+    fn state_of(state: &'static str) -> StateWithCards {
+        StateWithCards {
             state,
             cards: Vec::new(),
         }
