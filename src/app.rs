@@ -1,12 +1,7 @@
-use askama::Template;
-use axum::{
-    routing::{get, post},
-    Router, Form,
-};
-use serde::Deserialize;
+use velvet_web::prelude::*;
 
-pub fn init(app: Router) -> Router {
-    app.route("/", get(index))
+pub fn app() -> Router {
+    Router::new().route("/", get(index))
         .route("/board", get(board))
         .route("/state", post(state))
         .route("/card", post(card))

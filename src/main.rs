@@ -1,10 +1,25 @@
-use anyhow::Result;
-use norush::app;
-use tokio::net::TcpListener;
+mod app;
+
+use velvet_web::prelude::*;
 
 #[tokio::main]
-async fn main() -> Result<()> {
-    println!("xdg-open http://127.0.0.1:3000/");
-    axum::serve(TcpListener::bind("127.0.0.1:3000").await?, app().await?).await?;
-    Ok(())
+async fn main() {
+    #[derive(RustEmbed)]
+    #[folder = "static"]
+    struct S;
+
+    JWT::Secret.setup().await.unwrap();
+
+    dotenv::dotenv().ok();
+    let db = sqlite().await;
+    sqlx::migrate!().run(&db).await.unwrap();
+
+    App::new()
+        .router(app::app())
+        .inject(db)
+        .statics::<S>()
+        .enable_compression()
+        .start()
+        .await;
 }
+

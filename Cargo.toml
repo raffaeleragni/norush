@@ -6,18 +6,19 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.75"
-askama = { version = "0.12.1", features = ["with-axum"] }
-askama_axum = "0.4.0"
-axum = { version = "0.7.1", features = ["macros", "http2"] }
-axum-test = "14.0.0"
-rust-embed = { version = "8.0.0", features = ["axum"] }
-serde = { version = "1.0.193", features = ["derive"] }
-sqlx = { version = "0.7.3", features = ["sqlite", "runtime-tokio-native-tls"] }
-tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
+tokio = "1"
+serde = "1"
+velvet-web = "0.1"
+askama = { version = "0.12", features = ["with-axum"] }
+askama_axum = "0.4"
+rust-embed = { version = "8.5", features = ["axum"] }
+dotenv = "0.15.0"
+sqlx = {version = "0.8", features = ["sqlite"]}
 
-[profile.release]
-strip = true
-opt-level = "s"
-lto = true
-codegen-units = 1
+[dev-dependencies]
+axum = "0.7"
+axum-test = "15.3"
+
+[profile.dev.package.askama_derive]
+opt-level = 3
+
