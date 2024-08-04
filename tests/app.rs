@@ -5,5 +5,5 @@ use norush::app;
 async fn test() {
     let app = TestServer::new(app::app()).unwrap();
     let index = app.get("/").await;
-    println!("{}", index.text());
+    index.assert_status_ok();
 }

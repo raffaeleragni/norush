@@ -1,7 +1,8 @@
 use velvet_web::prelude::*;
 
 pub fn app() -> Router {
-    Router::new().route("/", get(index))
+    Router::new()
+        .route("/", get(index))
         .route("/board", get(board))
         .route("/state", post(state))
         .route("/card", post(card))
