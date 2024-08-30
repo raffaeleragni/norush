@@ -8,7 +8,7 @@ async fn main() {
     #[folder = "static"]
     struct S;
 
-    dotenv::dotenv().ok();
+    dotenvy::dotenv().ok();
     let db = sqlite().await;
     sqlx::migrate!().run(&db).await.unwrap();
 
