@@ -7,69 +7,10 @@ pub fn app() -> Router {
         .route("/state", post(state))
         .route("/card", post(card))
         .authorized_cookie_claims("/login", |_: Claims| Ok(AuthResult::OK))
-        .route("/register", get(register_form).post(register_do))
-        .route("/login", get(login_form).post(login_do))
-        .route("/logout", get(logout))
 }
 
 #[derive(Deserialize)]
 struct Claims {}
-
-#[derive(Template)]
-#[template(path = "login.html")]
-struct LoginTemplate;
-
-#[derive(Template)]
-#[template(path = "register.html")]
-struct RegisterTemplate;
-
-async fn login_form() -> impl IntoResponse {
-    LoginTemplate
-}
-
-async fn register_form() -> impl IntoResponse {
-    RegisterTemplate
-}
-
-#[derive(Deserialize)]
-struct RegisterForm {
-    username: String,
-    email: String,
-    password: String,
-}
-
-#[derive(Deserialize)]
-struct LoginForm {
-    username: String,
-    password: String,
-}
-
-async fn register_do(
-    Extension(db): Extension<Pool<Sqlite>>,
-    Form(register_form): Form<RegisterForm>,
-) -> AppResult<Redirect> {
-    let confirmation_code = register_user(
-        &db,
-        &register_form.username,
-        &register_form.email,
-        &register_form.password,
-    )
-    .await?;
-    register_user_confirm(&db, &register_form.username, &confirmation_code).await?;
-    Ok(Redirect::to("/login"))
-}
-
-async fn login_do(
-    Extension(db): Extension<Pool<Sqlite>>,
-    jar: CookieJar,
-    Form(form): Form<LoginForm>,
-) -> AppResult<(CookieJar, Redirect)> {
-    login_cookie(jar, "/", &db, &form.username, &form.password).await
-}
-
-async fn logout(jar: CookieJar) -> AppResult<(CookieJar, Redirect)> {
-    logout_cookie(jar, "/login")
-}
 
 #[derive(Template)]
 #[template(path = "index.html")]
