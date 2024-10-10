@@ -14,9 +14,10 @@ async fn main() -> AppResult<()> {
 
     App::new()
         .router(app::app())
-        .login_flow(&db)
+        .login_flow_with_mail(&db)
         .await
         .inject(db)
+        .inject(mailer())
         .statics::<S>()
         .start()
         .await?;
